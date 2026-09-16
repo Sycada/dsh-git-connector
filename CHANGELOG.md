@@ -1,5 +1,27 @@
 # Changelog
 
+## 0.1.1
+
+### Added
+
+- A **Git executable path** setting in the Settings card (Settings -> Plugins -> Git Connector),
+  showing the effective source alongside the resolved binary and version. Resolution order:
+  settings card -> profile config (`gitPath`) -> auto-detection.
+- A **Prerequisites** section with per-platform git installation instructions in both READMEs.
+
+### Changed
+
+- The provider form's **site address** field is now kind-aware. For `github` it explains that
+  public GitHub must leave it empty; for `gitea` / `forgejo` it states that one address serves
+  both the API and git.
+
+### Fixed
+
+- Choosing `github` while the site address held `https://github.com` now clears that address.
+  GitHub serves its API from `api.github.com` and git from `github.com`, so a site address is
+  treated as GitHub Enterprise and expands to `<address>/api/v3` - which left git transport
+  working while every forge API call failed.
+
 ## 0.1.0
 
 Initial release.

@@ -1,6 +1,6 @@
 {
   "name": "dsh-git-connector",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Git repository connector for DeepSeek Harness: name-addressed repo profiles, work-copy operations (clone/fetch/pull/push/commit), forge API tools (Gitea/Forgejo/GitHub), keys kept in the DSH credential center, and per-repo safety flags (TLS bypass, overwrite, force-push).",
   "type": "module",
   "main": "lib/index.js",
