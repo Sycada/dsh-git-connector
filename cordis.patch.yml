@@ -1,0 +1,23 @@
+# dsh-git-connector - Git/Gitea/GitHub repository connector for DeepSeek Harness.
+# Registers the plugin entry into the profile loader tree. Repository profiles and
+# provider records live under ~/.dsh/dsh-git-connector/store.json (NO secrets);
+# keys are stored through the DSH credentials center (~/.dsh/.credentials.yaml).
+# Agent tools: git_provider_* / git_repo_* / git_* / forge_*.
+# Client UI: Settings > Plugins > Git Connector.
+- insert:
+    - id: dsh-git-connector
+      name: dsh-git-connector
+      config:
+        gitPath: ""                 # custom git binary; empty = auto-detect
+        gitTimeoutMs: 300000        # per-command git timeout (clone needs room)
+        gitOutputLimit: 1048576     # stdout/stderr cap in bytes
+        workspaceRoot: ""           # root for local work copies; empty = ~/.dsh/dsh-git-connector/workspaces
+        allowOutsideWorkspace: false
+        allowForcePush: false
+        allowRawUrl: false          # forbid connecting arbitrary URLs (SSRF guard)
+        allowInsecure: false        # global default for TLS verification bypass
+        httpTimeoutMs: 30000
+        maxOutputLines: 2000
+        promptSectionOrder: 570
+        instanceLabel: ""           # commit author tag, e.g. "desktop-1"
+        trustedHosts: []
