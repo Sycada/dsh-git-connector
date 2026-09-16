@@ -13,6 +13,64 @@ This plugin focuses on **git transport + forge APIs** and targets **Gitea / Forg
 instances, with GitHub support as well. The community `dsh-github-connector` focuses on GitHub
 pull-request review and merge flows. They are **complementary and can coexist**.
 
+## Prerequisites
+
+| Item | Requirement |
+|---|---|
+| Node | `>= 20` |
+| DSH | `>= 0.1.1-rc.1` |
+| git | a usable `git` executable (see below) |
+
+The plugin performs all of its transport work (clone / fetch / pull / push) by **invoking the git
+command line**, not by embedding a git library - so a `git` binary must be reachable on the host.
+
+### Installing git
+
+**Windows**
+
+```powershell
+winget install --id Git.Git -e
+```
+
+You can also use the installer from <https://git-scm.com/download/win>.
+
+**macOS**
+
+```bash
+brew install git
+# or: xcode-select --install
+```
+
+**Linux**
+
+```bash
+sudo apt install git      # Debian / Ubuntu
+sudo dnf install git      # Fedora / RHEL
+sudo pacman -S git        # Arch
+```
+
+### Verify
+
+```bash
+git --version
+```
+
+### If git is not on PATH
+
+Pick either method:
+
+1. **Settings page** (recommended, changeable at runtime): Settings -> Plugins -> Git Connector ->
+   **Git executable path**
+2. **Profile config**: `gitPath` in `cordis.patch.yml`
+
+```yaml
+gitPath: "C:\\Program Files\\Git\\cmd\\git.exe"   # Windows example
+# gitPath: "/usr/local/bin/git"                        # macOS / Linux example
+```
+
+Resolution order: **settings page > profile config > auto-detection** (`PATH` first, then the
+platform's common install locations). Leaving the settings field empty restores auto-detection.
+
 ## Install
 
 Add the dependency to your DSH profile and register the bundle:

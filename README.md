@@ -11,6 +11,63 @@
 本插件聚焦 **Git 传输 + Forge API**，面向 **Gitea / Forgejo / 自建实例**，同时支持 GitHub。
 社区的 `dsh-github-connector` 聚焦 GitHub 的 PR 审查与合并流程。两者**功能互补，可以共存**。
 
+## 前置条件
+
+| 项 | 要求 |
+|---|---|
+| Node | `>= 20` |
+| DSH | `>= 0.1.1-rc.1` |
+| git | 一个可用的 `git` 可执行文件（见下） |
+
+本插件通过**调用 git 命令行**完成所有传输（clone / fetch / pull / push），而不是内置一个 git 库 ——
+所以宿主机上必须能找到 `git`。
+
+### 安装 git
+
+**Windows**
+
+```powershell
+winget install --id Git.Git -e
+```
+
+也可以从 <https://git-scm.com/download/win> 下载安装包。
+
+**macOS**
+
+```bash
+brew install git
+# 或者：xcode-select --install
+```
+
+**Linux**
+
+```bash
+sudo apt install git      # Debian / Ubuntu
+sudo dnf install git      # Fedora / RHEL
+sudo pacman -S git        # Arch
+```
+
+### 验证
+
+```bash
+git --version
+```
+
+### 如果 git 不在 PATH 上
+
+两种方式指定，**任选其一**：
+
+1. **配置页**（推荐，随时可改）：设置 → Plugins → Git Connector → **Git 可执行文件路径**
+2. **profile 配置**：`cordis.patch.yml` 里的 `gitPath`
+
+```yaml
+gitPath: "C:\\Program Files\\Git\\cmd\\git.exe"   # Windows 示例
+# gitPath: "/usr/local/bin/git"                        # macOS / Linux 示例
+```
+
+解析顺序：**配置页 > profile 配置 > 自动探测**（先查 `PATH`，再查各平台常见安装位置）。
+配置页留空即回到自动探测。
+
 ## 安装
 
 在 DSH profile 的 `package.json` 中加入依赖并登记 bundle：
