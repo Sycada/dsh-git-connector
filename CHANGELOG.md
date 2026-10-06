@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.1.2
+
+### Fixed
+
+- The Settings card now registers into **`settings.plugins.tab`** (Plugins -> Git Connector tab)
+  instead of the removed `settings.plugin.item` slot. DSH 0.2.0-rc.2 no longer declares the old
+  name anywhere, so the card silently failed to appear there and the section tab had no label.
+  The card also supplies a `label` so the tab reads "Git Connector" in the Plugins nav.
+- Removed the stale `dsh.client.inject: ["@deepseek-ai/dsh-client-runtime"]` declaration from the
+  manifest. That package does not exist in DSH 0.2.0-rc.2 and the field only ever carried
+  loading/prefetch metadata, so dropping it changes no behavior.
+
 ## 0.1.1
 
 ### Added
