@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.1.3
+
+### Fixed
+
+- The Settings entry now registers into **`plugins.item`**, the slot the Plugins page
+  actually declares in DSH 0.2.0-rc.2, instead of `settings.plugins.tab`. The former
+  `settings.section` registration is removed: with `plugins.item` live it produced a
+  second, duplicate "Git Connector" entry in the Settings navigation.
+- The card honours the page's own chrome. The Plugins page renders the entry itself
+  (title, icon, back button) and calls the component with `view="summary"` for the list
+  card and `view="page"` for the detail page; neither sets `defaultOpen`, so the
+  component's internal `open` flag never flipped and the detail page rendered an empty
+  body. `view="page"` is now treated as permanently expanded, and rendering a collapsible
+  header there no longer duplicates the page's own header.
+- `peerDependencies` now declares the client packages the browser half actually loads
+  (`dsh-client-locale`, `dsh-client-ui-plugin-manager`, `dsh-client-ui-primitives`,
+  `dsh-client-ui-slots`), and the DSH ranges are bounded below by `>=0.2.0-rc.1` — the
+  first release with the slot API this plugin uses.
+
 ## 0.1.2
 
 ### Fixed
