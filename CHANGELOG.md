@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.1.4
+
+### Fixed
+
+- **Activation failure when `@deepseek-ai/dsh-client-locale` is not loaded.** 0.1.3
+  added `"locale"` to the client plugin's `inject` array, which makes it a HARD
+  dependency. On a host that does not load the locale plugin (it is not part of
+  every profile), the fiber stayed pending forever and the plugin never
+  activated — taking the whole DSH startup down with `dsh-git-connector: failed`.
+  `inject` is back to `["slots"]` and the locale dictionaries are now registered
+  through a defensive `ctx.get("locale")` lookup, so the card still localises
+  when the service is present and degrades silently when it is not.
+
 ## 0.1.3
 
 ### Fixed
