@@ -1,5 +1,31 @@
 # Changelog
 
+## 0.1.6
+
+### Fixed
+
+- **Gitea/Forgejo: `forge_tag_create` reported a Release it never created.** The adapter
+  nested a `release` object inside the `POST /tags` body, but Gitea's `CreateTagOption`
+  is `{tag_name, target, message}` — the extra key is not part of that schema, so the server
+  **dropped it silently and still answered 201**, and the tool then echoed `release: true`
+  back off the request it had sent rather than off anything the server did. Verified against
+  Gitea 1.27.0 through its own `/swagger.v1.json`. A Release is now its own
+  `POST /releases` call, the returned `release` reflects what the server actually created,
+  and `releaseUrl` carries the Release link.
+
+### Added
+
+- `forge_tag_create` reports `releaseUrl` (Gitea/Forgejo), so a caller gets the Release
+  address rather than having to guess it from the tag name.
+
+### Notes
+
+- The regression test for this bug was itself the reason it survived: the Gitea mock read
+  `release` off the `POST /tags` body, mirroring the adapter's assumption instead of the
+  server's behaviour, so a false positive sailed through a green suite. The mock now models
+  the real API — `/tags` drops an unknown `release` key and a Release must go through
+  `/releases` — and the assertion checks the separate call rather than the reported flag.
+
 ## 0.1.5
 
 ### Added
