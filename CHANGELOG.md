@@ -1,5 +1,42 @@
 # Changelog
 
+## 0.1.5
+
+### Added
+
+- **Tag support** — the one whole capability the connector was missing.
+  - `git_tag` — list, create (annotated or lightweight), push, and `remote` (read origin's
+    tags over the git transport) for a repo profile's work copy.
+  - `git_tag_verify` — confirm origin really holds a tag after publishing it, by reading the
+    remote rather than trusting the push's exit code.
+  - `forge_tag_list` / `forge_tag_create` — create the tag through the forge API, which is
+    the reliable path: pushing `refs/tags/...` over the git transport can fail authentication
+    on some Gitea instances. `forge_tag_create` also creates a **Release** on Gitea/Forgejo.
+- **Server-side branch management**: `forge_branch_create` and `forge_branch_delete`, so a
+  branch can be created or removed without a local work copy. Deleting reports the tip first
+  and is refused on a `readOnly` profile.
+- `forge_branch_delete` and the tag tools absorb the Gitea/GitHub protocol divergence:
+  Gitea creates a tag in one `POST /tags`, GitHub needs a tag object plus a ref; callers use
+  the same arguments either way.
+
+### Changed
+
+- The system-prompt section now states the connector is the **default** path for every git and
+  forge operation, and enumerates the three cases where a shell fallback is legitimate (no
+  equivalent tool, a tool that already failed, or a repository with no saved profile).
+  Previously it only said "you have first-class git tools", which left shell bypass unaddressed.
+- Tag creation is deliberately **not** gated by the force-push flags: tags are immutable release
+  markers, so demanding `overwriteRemote` for one would be meaningless. It remains subject to
+  `readOnly`.
+
+### Fixed
+
+- `git_tag`'s result field `tags` now always means tag **records**, for every action; a push
+  reports its target names under `pushedNames`. Previously the same field carried plain strings
+  for `push` and objects for `list`, which a caller could not read uniformly.
+- Tag names are validated with `git check-ref-format` instead of a hand-rolled pattern, which
+  accepted names git rejects (e.g. `bad..name` with consecutive dots).
+
 ## 0.1.4
 
 ### Fixed

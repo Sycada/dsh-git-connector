@@ -138,8 +138,24 @@ credentials or the local path.
 | Providers | `git_provider_list` `git_provider_add` `git_provider_update` `git_provider_remove` `git_provider_test` |
 | Repo profiles | `git_repo_list` `git_repo_add` `git_repo_update` `git_repo_remove` |
 | Git operations | `git_clone` `git_fetch` `git_pull` `git_push` `git_status` `git_branch` `git_diff` `git_log` `git_commit` |
-| Forge API | `forge_repo_list` `forge_repo_create` `forge_repo_info` `forge_branch_list` `forge_contents` `forge_pull_list` `forge_pull_create` `forge_issue_create` |
+| Tags | `git_tag` `git_tag_verify` `forge_tag_list` `forge_tag_create` |
+| Forge API | `forge_repo_list` `forge_repo_create` `forge_repo_info` `forge_branch_list` `forge_branch_create` `forge_branch_delete` `forge_contents` `forge_pull_list` `forge_pull_create` `forge_issue_create` |
 | Credentials | `git_credential_status` |
+
+### Publishing a tag
+
+Pushing `refs/tags/...` over the git transport fails authentication on some Gitea instances, so
+**create the tag through the forge API**:
+
+```
+forge_tag_create { repo: "my-project", tag: "v0.2.0", target: "main", message: "..." }
+git_tag_verify   { repo: "my-project", name: "v0.2.0" }   # confirm it reached the remote
+```
+
+On Gitea/Forgejo, `release: true` also creates a Release. GitHub needs two requests (a tag object
+then a ref); the adapter absorbs that difference so the arguments stay identical. Tags are not
+subject to the four force-push gates (a tag is a release marker, not a branch that can lose
+commits), but `readOnly` still applies.
 
 Profile management and execution are kept strictly apart: `git_repo_*` only maintains profiles,
 `git_*` acts on a repository.

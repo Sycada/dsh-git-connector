@@ -132,10 +132,24 @@ git_push   { repo: "my-project" }
 | 托管 | `git_provider_list` `git_provider_add` `git_provider_update` `git_provider_remove` `git_provider_test` |
 | 仓库档案 | `git_repo_list` `git_repo_add` `git_repo_update` `git_repo_remove` |
 | Git 操作 | `git_clone` `git_fetch` `git_pull` `git_push` `git_status` `git_branch` `git_diff` `git_log` `git_commit` |
-| Forge API | `forge_repo_list` `forge_repo_create` `forge_repo_info` `forge_branch_list` `forge_contents` `forge_pull_list` `forge_pull_create` `forge_issue_create` |
+| Tag | `git_tag` `git_tag_verify` `forge_tag_list` `forge_tag_create` |
+| Forge API | `forge_repo_list` `forge_repo_create` `forge_repo_info` `forge_branch_list` `forge_branch_create` `forge_branch_delete` `forge_contents` `forge_pull_list` `forge_pull_create` `forge_issue_create` |
 | 凭据 | `git_credential_status` |
 
 档案管理与执行动作严格分开：`git_repo_*` 只维护档案，`git_*` 才作用于仓库。
+
+### 发布 tag 的推荐路径
+
+推 `refs/tags/...` 走 git 传输在部分 Gitea 实例上会认证失败，因此**优先用 forge API 建 tag**：
+
+```
+forge_tag_create { repo: "my-project", tag: "v0.2.0", target: "main", message: "..." }
+git_tag_verify   { repo: "my-project", name: "v0.2.0" }   # 确认真到了远端
+```
+
+Gitea/Forgejo 上加 `release: true` 可顺带建 Release；GitHub 的 tag 分两步（先建 tag 对象再建 ref），
+这个差异由适配器吸收，调用方用同一套参数即可。tag 不受 force-push 四道闸门约束（tag 是发布标记，
+不是会丢提交的分支），但仍受 `readOnly` 约束。
 
 ## 按仓库的独立开关
 
