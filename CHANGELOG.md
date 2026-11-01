@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.1.8
+
+### Fixed
+
+- **The README advertised a DSH version this plugin cannot run on.** Both `README.md` and
+  `README.en.md` listed `>= 0.1.1-rc.1` under Prerequisites, but the manifest has required
+  `dsh.engines.dsh: ">=0.2.0-rc.1 <0.3.0-0"` since v0.1.3. The gap was one major range: on a
+  0.1.x runtime the loader evaluates `engines.dsh` and files the plugin under `skippedBundles`,
+  so it never loads at all. A reader following the README on such a host would see nothing and
+  no error. The prerequisite row now states the same range the manifest enforces.
+
 ## 0.1.7
 
 ### Fixed

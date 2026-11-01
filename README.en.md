@@ -18,7 +18,7 @@ pull-request review and merge flows. They are **complementary and can coexist**.
 | Item | Requirement |
 |---|---|
 | Node | `>= 20` |
-| DSH | `>= 0.1.1-rc.1` |
+| DSH | `>= 0.2.0-rc.1 <0.3.0-0` |
 | git | a usable `git` executable (see below) |
 
 The plugin performs all of its transport work (clone / fetch / pull / push) by **invoking the git
