@@ -1,5 +1,35 @@
 # Changelog
 
+## 0.1.7
+
+### Fixed
+
+- **`git_status` returned "invalid output" instead of git's own explanation.** The failure
+  branch in `lib/engine.js` forwards the raw `stdout`/`stderr` so a caller can see what git
+  actually said, but the tool's output schema in `lib/tools.js` never declared those two keys
+  and the root object is `additionalProperties: false`. The registry validator therefore
+  rejected the **whole** result, and on a repo that was never cloned (or any non-git work copy)
+  the model saw `tool "git_status" returned invalid output` with the real cause discarded.
+  Both keys are now declared. Verified by replaying the failure branch through the runtime's
+  own validator, extracted from the shipping `app.asar`: before the fix it reported
+  `"value.stdout" is not a declared property (additionalProperties: false)` and the same for
+  `stderr`; after the fix, zero violations.
+- **`GET /state` reported a hardcoded plugin version.** `lib/routes.js` answered with the
+  literal `"0.1.0"`, so the card could never show the version that was actually installed.
+  It now reads `version` from the package manifest at load time, falling back to an empty
+  string if the manifest is unreadable so the API keeps answering.
+- **Locale dictionaries were silently dropped on every host.** `lib/client.js` guarded on
+  `typeof localeSvc.define === "function"`, but the host locale service exposes
+  `register(ns, dicts)` and no `define`, so the guard never matched and registration was
+  skipped without an error. It now calls `register()`, and passes the raw `[zh, en]` pairs
+  rather than the single column already picked at load time — the old code would have
+  registered the same text under both languages.
+
+### Notes
+
+- The locale fix changes nothing visible yet: the card's title comes from a constant and this
+  is the only string pair registered. It removes a silent no-op, not a wrong label.
+
 ## 0.1.6
 
 ### Fixed
